@@ -38,6 +38,15 @@
             message_input.focus();
         }
     });
+
+    // triggered when user in leaving the page
+    window.onbeforeunload = function () {
+        socket.emit('leave_room', {
+            username: "{{ username }}",
+            room: "{{ room }}"
+        })
+    };
+
     socket.on('receive_message', function (data){
         console.log(data);
         const newNode = document.createElement('div');
@@ -51,5 +60,13 @@
         newNode.innerHTML = `<b>${data.username}</b> has joined the room ${data.room}`;
         document.getElementById('messages').appendChild(newNode);
     })
+
+    socket.on('leave_room_announcement', function (data){
+        console.log(data);
+        const newNode = document.createElement('div');
+        newNode.innerHTML = `<b>${data.username}</b> has left the room ${data.room}`;
+        document.getElementById('messages').appendChild(newNode);
+    })
+
 </script>
 </html>
