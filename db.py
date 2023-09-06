@@ -1,8 +1,11 @@
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash
-
+from dotenv import load_dotenv
+import os
 from user import User
 
+load_dotenv()
+mongo_url = os.getenv('MONGO_URL')
 client = MongoClient(mongo_url)
 
 chat_db = client.get_database("ChatDB")
