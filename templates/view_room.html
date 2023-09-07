@@ -5,12 +5,17 @@
     <title>My Chat App</title>
 </head>
 <body>
-  <h1>Welcome to Chat room {{room}}</h1>
+  <h1>Welcome to Chat room: {{room.name}}</h1>
   <div id="messages"></div>
   <form id="message_input_form">
     <input type="text" id="message_input" placeholder="Enter Your message here">
     <button type="submit">Send</button>
   </form>
+<ul>
+    {% for member in room_members %}
+        <li>{{ member._id.username }}</li>
+    {% endfor%}
+</ul>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
 <script>
@@ -18,8 +23,8 @@
 
     socket.on('connect', function (){
         socket.emit('join_room', {
-            username: '{{username}}',
-            room: '{{room}}'
+            username: '{{ username }}',
+            room: '{{ room._id }}'
         });
 
         let message_input = document.getElementById('message_input');
@@ -30,7 +35,7 @@
             if(message.length) {
                 socket.emit('send_message', {
                     username: '{{username}}',
-                    room: '{{room}}',
+                    room: '{{room._id}}',
                     message: message
                 });
             }
@@ -43,7 +48,7 @@
     window.onbeforeunload = function () {
         socket.emit('leave_room', {
             username: "{{ username }}",
-            room: "{{ room }}"
+            room: "{{ room._id }}"
         })
     };
 
@@ -54,19 +59,19 @@
         document.getElementById('messages').appendChild(newNode);
     });
 
-    socket.on('join_room_announcement', function (data){
-        console.log(data);
-        const newNode = document.createElement('div');
-        newNode.innerHTML = `<b>${data.username}</b> has joined the room ${data.room}`;
-        document.getElementById('messages').appendChild(newNode);
-    })
+    // socket.on('join_room_announcement', function (data){
+    //     console.log(data);
+    //     const newNode = document.createElement('div');
+    //     newNode.innerHTML = `<b>${data.username}</b> has joined the room ${data.room}`;
+    //     document.getElementById('messages').appendChild(newNode);
+    // })
 
-    socket.on('leave_room_announcement', function (data){
-        console.log(data);
-        const newNode = document.createElement('div');
-        newNode.innerHTML = `<b>${data.username}</b> has left the room ${data.room}`;
-        document.getElementById('messages').appendChild(newNode);
-    })
+    // socket.on('leave_room_announcement', function (data){
+    //     console.log(data);
+    //     const newNode = document.createElement('div');
+    //     newNode.innerHTML = `<b>${data.username}</b> has left the room ${data.room}`;
+    //     document.getElementById('messages').appendChild(newNode);
+    // })
 
 </script>
 </html>
